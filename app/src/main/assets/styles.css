@@ -1,5 +1,5 @@
 :root {
-  --font: "DejaVu Sans Mono";
+  --font: "sans-serif";
 }
 
 body{
@@ -60,7 +60,7 @@ h2{
   grid-template-columns: 1fr;
   grid-template-rows: 50px;
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
   align-items: center;
 }
@@ -107,7 +107,6 @@ h2{
 .normal-text{
   color: white;
   font-size: 17px;
-  font-weight: 700;
   font-family: var(--font), monospace;
 }
 
@@ -132,7 +131,7 @@ h2{
   padding: 10px;
   font-size: 17px;
   font-weight: 700;
-  font-family: "DejaVu Sans Mono", monospace;
+  font-family: var(--font), monospace;
   color: #3eb489;
   border: none;
   border-radius: 100px;
@@ -140,13 +139,13 @@ h2{
 
 .normal-text input[type=text]{
   font-size: 17px;
-  font-family: "DejaVu Sans Mono", monospace;
+  font-family: var(--font), monospace;
   width: 100%;
 }
 
 .normal-text textarea{
   font-size: 17px;
-  font-family: "DejaVu Sans Mono", monospace;
+  font-family: var(--font), monospace;
   width: 100%;
 }
 
