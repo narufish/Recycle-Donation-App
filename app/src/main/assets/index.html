@@ -1,18 +1,94 @@
 <html>
-<head>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<div class="main-header">Recycle app</div><br>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>re:Sai</title>
+    <link href="styles.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <body>
+    <div class="content">
+      <header class="app-header">
+        <div class="container">
+          <!-- <img class="logo" src="" alt="" /> -->
+          <h1>re:Sai</h1>
+          <input class="search" type="text" placeholder="Search..." />
+        </div>
+      </header>
 
-<div class="main-screen">
-    <div><button onclick="window.location.href='recycle_page.html'">Recycle</button></div>
-    <div><button onclick="window.location.href='donation_page.html'">Donate</button></div>
-    <div><button onclick="window.location.href='centers_page.html'">Centers</button></div>
-    <div><button onclick="window.location.href='support_page.html'">Support</button></div>
-    <div><button onclick="window.location.href='info_page.html'">Info</button></div>
-</div>
+      <div class="subheader">
+        <div>
+          <p>Now delivering our services in more cities</p>
+          <a href="placeholder.html">
+            <p>Find out now <i class="fa fa-chevron-right"></i></p>
+          </a>
+        </div>
+        <img src="https://i.ibb.co/PxGygfW/delivery.png" alt="" />
+      </div>
 
-<!--<script src="script.js"></script>-->
-</body>
+      <div class="grid container">
+        <a href="recycle_page.html">
+          <div class="item">
+            <h4>Recycle</h4>
+            <p class="desc">Recycling for the future</p>
+            <img src="img/recycling.png" alt="" />
+          </div>
+        </a>
+      </div>
+
+      <div class="grid2 container">
+        <a href="donation_page.html">
+          <div class="item">
+            <h4>Donation</h4>
+            <p class="desc">Donate for the better world</p>
+            <img src="img/donate.png" alt="" />
+          </div>
+        </a>
+
+        <a href="centers_page.html">
+          <div class="item">
+            <h4>Centers</h4>
+            <p class="desc">Checkout our centers near you</p>
+            <img src="img/store.png" alt="" />
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <footer class="app-footer">
+      <ul>
+        <a href="index.html">
+          <li>
+            <i class="fa fa-home"></i>
+            Home
+          </li>
+        </a>
+
+        <a href="info_page.html">
+          <li>
+            <i class="fa fa-info-circle"></i>
+            Information
+          </li>
+        </a>
+
+        <a href="support_page.html">
+          <li>
+            <i class="fa fa-support"></i>
+            Support
+          </li>
+        </a>
+
+        <a href="placeholder.html">
+          <li>
+            <i class="fa fa-user"></i>
+            Account
+          </li>
+        </a>
+      </ul>
+    </footer>
+  </body>
 </html>

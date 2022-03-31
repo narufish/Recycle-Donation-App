@@ -1,0 +1,381 @@
+<!--
+  Copyright 2019 Google LLC
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css" />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <style>
+    /* Always set the map height explicitly to define the size of the div
+     * element that contains the map. */
+    #map {
+      height: 100%;
+      background-color: white;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* TODO: Step 4A1: Make a generic bottom bar */
+    /* Styling for an info pane that slides out from the bottom.
+     * Hidden by default. */
+    #panel {
+      height: null;
+      width: 100%;
+      background-color: white;
+      position: fixed;
+      justify-content: center;
+      border-top-left-radius:10px;
+      border-top-right-radius:10px;
+      z-index: 1;
+      overflow: auto;
+      transition: all .2s ease-out;
+      right: 0;
+      left: 0;
+      bottom: 8.5%;
+    }
+
+    .open {
+      height:50%
+    }
+
+    /* Styling for place details */
+    .hero {
+      width: 100%;
+      height: auto;
+      max-height: 166px;
+      display: block;
+    }
+
+    .place,
+    p {
+      font-family: 'open sans', arial, sans-serif;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .details {
+      color: darkslategrey;
+    }
+
+    aMap {
+      text-decoration: none;
+      color: rgb(66, 127, 237);
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- The slide-out panel for showing place details -->
+<div id="panel"></div>
+
+<!-- Map appears here -->
+<div id="map"></div>
+
+<script>
+    /* Note: This example requires that you consent to location sharing when
+     * prompted by your browser. If you see the error "Geolocation permission
+     * denied.", it means you probably did not give permission for the browser * to locate you. */
+    let pos;
+    let map;
+    let bounds;
+    let infoWindow;
+    let currentInfoWindow;
+    let service;
+    let infoPane;
+    let usermarker;
+    let d;
+    let day;
+    function initMap() {
+      // Initialize variables
+      bounds = new google.maps.LatLngBounds();
+      infoWindow = new google.maps.InfoWindow;
+      currentInfoWindow = infoWindow;
+      /* TODO: Step 4A3: Add a generic sidebar */
+      infoPane = document.getElementById('panel');
+      d = new Date();
+      day = d.getDay()-1;
+      if(day<0){//gets the day of the week to display opening hours
+        day = 6;
+      }
+
+      // Try HTML5 geolocation
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          map = new google.maps.Map(document.getElementById('map'), {
+            center: pos,
+            zoom: 15
+          });
+          usermarker = new google.maps.Marker({
+            position: new google.maps.LatLng(pos),
+            map: map,
+            icon:{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillOpacity: 1,
+              strokeWeight: 2,
+              fillColor: '#5384ED',
+              strokeColor: '#ffffff'
+            },
+          });
+
+          bounds.extend(pos);
+
+          //infoWindow.setPosition(pos);//infoWindow the "location found" box
+          //infoWindow.setContent('Location found.');
+          //infoWindow.open(map);
+          usermarker.setPosition(pos);
+          map.setCenter(pos);
+
+          // Call Places Nearby Search on user's location
+          getNearbyPlaces(pos);
+        }, () => {
+          // Browser supports geolocation, but user has denied permission
+          handleLocationError(true, infoWindow);
+        });
+      } else {
+        // Browser doesn't support geolocation
+        handleLocationError(false, infoWindow);
+      }
+    }
+
+    // Handle a geolocation error
+    function handleLocationError(browserHasGeolocation, infoWindow) {
+      // Set default location to Mutiara Damansara, Petaling Jaya, Malaysia
+      pos = { lat: 3.156, lng: 101.605 };
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: pos,
+        zoom: 15
+      });
+      usermarker = new google.maps.Marker({
+            position: new google.maps.LatLng(pos),
+            map: map,
+            icon:{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillOpacity: 1,
+              strokeWeight: 2,
+              fillColor: '#5384ED',
+              strokeColor: '#ffffff'
+            },
+      });
+
+      // Display an InfoWindow at the map center
+      //infoWindow.setPosition(pos);
+      //infoWindow.setContent(browserHasGeolocation ?
+        //'Geolocation permissions denied. Using default location.' :
+        //'Error: Your browser doesn\'t support geolocation.');
+      //infoWindow.open(map);
+      currentInfoWindow = infoWindow;
+
+      // Call Places Nearby Search on the default location
+      getNearbyPlaces(pos);
+    }
+
+    // Perform a Places Nearby Search Request
+    function getNearbyPlaces(position) {
+      let request = {
+        location: position,
+        rankBy: google.maps.places.RankBy.DISTANCE,
+        keyword: 'donations center'
+      };
+      let request1 = {
+        location: position,
+        rankBy: google.maps.places.RankBy.DISTANCE,
+        keyword: "orphanage"
+      };
+
+      service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(request, nearbyCallback);
+      service.nearbySearch(request1, nearbyCallback);
+    }
+
+    // Handle the results (up to 20) of the Nearby Search
+    function nearbyCallback(results, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        createMarkers(results);
+      }
+    }
+
+    // Set markers at the location of each place result
+    function createMarkers(places) {
+      places.forEach(place => {
+        let marker = new google.maps.Marker({
+          position: place.geometry.location,
+          map: map,
+          title: place.name
+        });
+
+        /* TODO: Step 4B: Add click listeners to the markers */
+        // Add click listener to each marker
+        google.maps.event.addListener(marker, 'click', () => {
+          let request = {
+            placeId: place.place_id,
+            fields: ['name', 'formatted_address', 'geometry', 'rating',
+              'website', 'photos','opening_hours']
+          };
+
+          /* Only fetch the details of a place when the user clicks on a marker.
+           * If we fetch the details for all place results as soon as we get
+           * the search response, we will hit API rate limits. */
+          service.getDetails(request, (placeResult, status) => {
+            showDetails(placeResult, marker, status)
+          });
+        });
+
+        // Adjust the map bounds to include the location of this marker
+        bounds.extend(place.geometry.location);
+      });
+      /* Once all the markers have been placed, adjust the bounds of the map to
+       * show all the markers within the visible area. */
+      map.fitBounds(bounds);
+    }
+
+    /* TODO: Step 4C: Show place details in an info window */
+    // Builds an InfoWindow to display details above the marker
+    function showDetails(placeResult, marker, status) {
+      if (status == google.maps.places.PlacesServiceStatus.OK) {
+        let placeInfowindow = new google.maps.InfoWindow();
+        let rating = "None";
+        if (placeResult.rating) rating = placeResult.rating;
+        placeInfowindow.setContent('<div><strong>' + placeResult.name +
+          '</strong><br>' + '</div>' + '<div style="border-top: 1px solid rgb(204, 204, 204); margin-top: 9px; padding: 6px; font-size: 13px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; font-family: Roboto, Arial;">'+
+      '<a href="'+ "https://www.google.com/maps/search/?api=1&query="+placeResult.geometry.location.lat()+"%2C"+placeResult.geometry.location.lng()+"&query_place_id="+ placeResult.place_id +'" target="_blank" rel="noopener" style="cursor: pointer; color: rgb(66, 127, 237); text-decoration: none;">View on Google Maps</a></div>');//[ + 'Rating: ' + rating ]->deleted content
+
+        placeInfowindow.open(marker.map, marker);
+        currentInfoWindow.close();
+        currentInfoWindow = placeInfowindow;
+        showPanel(placeResult);
+      } else {
+        console.log('showDetails failed: ' + status);
+      }
+    }
+
+    /* TODO: Step 4D: Load place details in a sidebar */
+    // Displays place details in a sidebar
+    function showPanel(placeResult) {
+      // If infoPane is already open, close it
+      if (infoPane.classList.contains("open")) {
+        infoPane.classList.remove("open");
+      }
+
+      // Clear the previous details
+      while (infoPane.lastChild) {
+        infoPane.removeChild(infoPane.lastChild);
+      }
+
+      /* TODO: Step 4E: Display a Place Photo with the Place Details */
+      // Add the primary photo, if there is one
+      if (placeResult.photos) {
+        let firstPhoto = placeResult.photos[0];
+        let photo = document.createElement('img');
+        photo.classList.add('hero');
+        photo.src = firstPhoto.getUrl();
+        infoPane.appendChild(photo);
+      }
+
+      // Add place details with text formatting
+      let name = document.createElement('h1');
+      name.classList.add('place');
+      name.textContent = placeResult.name;
+      infoPane.appendChild(name);
+      if (placeResult.rating) {
+        let rating = document.createElement('p');
+        rating.classList.add('details');
+        rating.textContent = `Rating: ${placeResult.rating} \u272e`;
+        infoPane.appendChild(rating);
+      }
+      let address = document.createElement('p');
+      address.classList.add('details');
+      address.textContent = placeResult.formatted_address;
+      infoPane.appendChild(address);
+
+      if (placeResult.opening_hours) {
+        let opening_hours = document.createElement('p');
+        opening_hours.classList.add('details');
+        opening_hours.textContent = `Opening Hours: ${placeResult.opening_hours.weekday_text[day]} \u272e`;
+        infoPane.appendChild(opening_hours);
+      }
+
+      if (placeResult.website) {
+        let websitePara = document.createElement('p');
+        let websiteLink = document.createElement('aMap');
+        let websiteUrl = document.createTextNode(placeResult.website);
+        websiteLink.appendChild(websiteUrl);
+        websiteLink.title = placeResult.website;
+        websiteLink.href = placeResult.website;
+        websitePara.appendChild(websiteLink);
+        infoPane.appendChild(websitePara);
+      }
+
+      // Open the infoPane
+      infoPane.classList.add("open");
+    }
+  </script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAi0L1Xa5JgwQY1a4gIQExnVC5oFKexfhI&libraries=places&callback=initMap">
+</script>
+<footer class="app-footer">
+    <ul>
+        <a href="index.html">
+            <li>
+                <i class="fa fa-home"></i>
+                Home
+            </li>
+        </a>
+
+        <a href="info_page.html">
+            <li>
+                <i class="fa fa-info-circle"></i>
+                Information
+            </li>
+        </a>
+
+        <a href="support_page.html">
+            <li>
+                <i class="fa fa-support"></i>
+                Support
+            </li>
+        </a>
+
+        <a href="placeholder.html">
+            <li>
+                <i class="fa fa-user"></i>
+                Account
+            </li>
+        </a>
+    </ul>
+</footer>
+</body>
+
+</html>
