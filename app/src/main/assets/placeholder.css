@@ -1,0 +1,146 @@
+:root {
+  --font: "sans-serif";
+}
+
+body {
+  background-color: #3eb489;
+  margin: 0;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+h2 {
+  color: white;
+  text-align: center;
+}
+
+.margin-body {
+  margin: 5%;
+}
+
+.main-screen {
+  display: grid;
+  color: white;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 80px);
+  justify-content: space-evenly;
+  justify-items: center;
+  align-content: space-evenly;
+  align-items: center;
+}
+
+.main-screen > div {
+  height: 100%;
+  width: 50%;
+  justify-items: center;
+}
+
+.main-screen button {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font), monospace;
+  color: #3eb489;
+  border: none;
+  border-radius: 100px;
+}
+
+.main-header {
+  display: grid;
+  background-color: white;
+  color: #3eb489;
+  grid-template-columns: 1fr;
+  grid-template-rows: 50px;
+  font-size: 30px;
+  font-weight: 500;
+  text-align: center;
+  align-items: center;
+}
+
+.main-header > div {
+  width: 100%;
+  height: 100%;
+}
+
+.header {
+  display: grid;
+  grid-gap: 0px;
+  background-color: white;
+  color: #3eb489;
+  grid-template-columns: 20% 80%;
+  grid-auto-rows: 50px;
+  font-size: 30px;
+  font-weight: 700;
+  align-items: center;
+  text-align: center;
+}
+
+.header > div {
+}
+
+.header button {
+  height: 100%;
+  width: 100%;
+  font-family: var(--font), monospace;
+  background-color: white;
+  color: #3eb489;
+  border: none;
+  font-size: 30px;
+  font-weight: 700;
+  border-right: 1px solid #d3d3d3;
+}
+
+.normal-text {
+  color: white;
+  font-size: 17px;
+  font-family: var(--font), monospace;
+}
+
+.normal-text button {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font), monospace;
+  color: #3eb489;
+  border: none;
+  border-radius: 100px;
+}
+
+.normal-text input[type="submit"] {
+  background-color: white;
+  text-align: center;
+  padding: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  font-family: var(--font), monospace;
+  color: #3eb489;
+  border: none;
+  border-radius: 100px;
+}
+
+.normal-text input[type="text"] {
+  font-size: 17px;
+  font-family: var(--font), monospace;
+  width: 100%;
+}
+
+.normal-text textarea {
+  font-size: 17px;
+  font-family: var(--font), monospace;
+  width: 100%;
+}
+
+.support {
+  color: white;
+}
