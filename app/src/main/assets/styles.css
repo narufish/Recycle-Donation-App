@@ -270,3 +270,8 @@ input[type="submit"]:hover {
     width: 60px;
   }
 }
+
+.form{
+    margin: 20px;
+    border: 20px;
+}
